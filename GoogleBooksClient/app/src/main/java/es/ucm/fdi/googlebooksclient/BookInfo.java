@@ -23,9 +23,9 @@ public class BookInfo {
     static List<BookInfo> fromJsonResponse(String s) {
         try {
             JSONObject data = new JSONObject(s);
-            String nResults = data.getString("totalItems");
-            int nRes = Integer.parseInt(nResults);
             JSONArray items = data.getJSONArray("items");
+
+            int nRes = items.length();
 
             List<BookInfo> resultados = new ArrayList<>();
 
@@ -40,12 +40,15 @@ public class BookInfo {
                 String title = volumeInfo.getString("title");
 
                 // Get all authors
-                JSONArray arr = volumeInfo.getJSONArray("authors");
+                JSONArray arr = new JSONArray();
+                if (volumeInfo.has("authors"))
+                    arr = volumeInfo.getJSONArray("authors");
                 String authors = "";
                 for(int j = 0; j < arr.length(); j++){
                     authors += arr.getString(j) + ", ";
                 }
-                authors = authors.substring(0, authors.length() - 2);
+                if (authors.length() > 2)
+                    authors = authors.substring(0, authors.length() - 2);
 
                 BookInfo result = new BookInfo(authors, title, link);
                 resultados.add(result);

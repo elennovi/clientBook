@@ -22,14 +22,20 @@ public class BookLoader extends AsyncTaskLoader<List<BookInfo>> {
     final String QUERY_PARAM = "q";
     final String PRINT_TYPE = "printType";
 
-    public BookLoader(@NonNull Context context) {
+    private String queryString;
+    private String printType;
+
+    public BookLoader(@NonNull Context context, String queryString, String printType) {
         super(context);
+        this.queryString = queryString;
+        this.printType = printType;
     }
 
     @Nullable
     @Override
     public List<BookInfo> loadInBackground() {
-        return null;
+        String resultsJSON = getBooksInfoJson(queryString, printType);
+        return BookInfo.fromJsonResponse(resultsJSON);
     }
 
     public void onStartLoading(){
